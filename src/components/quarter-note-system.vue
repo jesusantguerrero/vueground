@@ -1,13 +1,23 @@
 <template>
-  <div class="hello">
+  <div class="hello container">
     <h1>{{ msg }}</h1>
-  
-    <div v-if="quarter">
-      <div v-for="quarterState in Object.keys(states)" :key="quarterState" :class="{selected: quarterState == state}">
-        {{ quarterState }}
+
+    <div v-if="quarter" class="row">
+      <div
+        v-for="quarterState in Object.keys(states)"
+        :key="quarterState"
+        class="col-md-6"
+        :class="{ selected: quarterState == state }"
+      >
+        <div class="card w-100 mb-5">
+          <div class="card-body">
+            <h5 class="card-title">{{ quarterState }}</h5>
+            <p class="card-text"></p>
+          </div>
+        </div>
       </div>
     </div>
-    <button @click="toggleState">Toggle State</button>
+    <button class="btn btn-primary" @click="toggleState">Toggle State</button>
   </div>
 </template>
 
