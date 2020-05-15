@@ -1,7 +1,8 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <QuarterNoteSystem msg="Welcome to Your Vue.js App" />
+    <h1 class="text-center">Status of RD</h1>
+    <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
+    <!-- <QuarterNoteSystem msg="Welcome to Your Vue.js App" /> -->
     <QuarterApi></QuarterApi>
   </div>
 </template>
