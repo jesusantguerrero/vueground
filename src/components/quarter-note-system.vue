@@ -7,7 +7,7 @@
         v-for="quarterState in Object.keys(states)"
         :key="quarterState"
         class="col-md-6"
-        :class="{ selected: quarterState == state }"
+        :class="{ selected: quarter.state.value.includes(quarterState) }"
       >
         <div class="card w-100 mb-5">
           <div class="card-body">
@@ -59,6 +59,7 @@ export default {
     const quarterService = interpret(fourQuarterMachine)
       .onTransition(state => {
         this.state = state.value;
+        console.log(quarterService);
       })
       .start();
     this.quarter = quarterService;
