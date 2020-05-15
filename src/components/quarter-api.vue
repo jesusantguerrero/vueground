@@ -1,11 +1,20 @@
 <template>
-  <div class="">
-    <h1>{{ msg }}</h1>
+  <div class="pt-5">
+    
     <div class="row">
       <div class="col-md-4">
         <app-sider :form-data="postService.state.context.posts"></app-sider>
       </div>
-      <div class="col-md-8"></div>
+      <div class="col-md-6">  
+        <rd
+          style="width:100%; height:100%"
+          @selected="selectedProvince = $event"
+        ></rd>
+      </div>
+      <div class="col-md-2">
+         <h1 class="text-center"> Provincia</h1>
+         <h2 class="text-center">{{ selectedProvince }}</h2>
+      </div>
       <div class="col-md-12 text-center">
         <button class="btn btn-primary" @click="toggleState">
           <i
@@ -22,6 +31,7 @@
 <script>
 import { createMachine, interpret, assign } from "xstate";
 import AppSider from "./sider.vue";
+import Rd from "./RD.vue";
 
 export default {
   name: "PostsMachine",
@@ -29,12 +39,14 @@ export default {
     msg: String
   },
   components: {
-    AppSider
+    AppSider,
+    Rd
   },
   data() {
     return {
       postService: null,
       state: null,
+      selectedProvince: '',
       historicalEndpoint:
         "https://corona.lmao.ninja/v2/historical/dominican%20republic",
       postApiEndpint:
@@ -111,5 +123,18 @@ a {
 
 .selected {
   color: dodgerblue;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+}
+
+.land:hover {
+  fill: #024364;
+  fill-opacity: 1;
+  stroke: #eb4d6c;
+  stroke-opacity: 1;
+  stroke-width: 1;
 }
 </style>

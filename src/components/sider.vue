@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h5 class="text-center"><span class="text-gray">Actualizacion: </span> {{ updated }}</h5>
+    <h5 class="text-center">
+      <span class="text-gray">Actualizacion: </span> {{ updated }}
+    </h5>
     <div class="row">
       <div class="col-md-12">
         <div class="card item-card">
@@ -70,9 +72,10 @@ export default {
     }
   },
   computed: {
-      updated() {
-          return new Date(this.formData.updated).toISOString().slice(0, 10);
-      }
+    updated() {
+      const time  = this.formData ? this.formData.updated : '';
+      return new Date().toISOString().slice(0, 10);
+    }
   }
 };
 </script>
