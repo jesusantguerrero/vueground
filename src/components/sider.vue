@@ -4,34 +4,22 @@
       <span class="text-gray">Actualizacion: </span> {{ updated }}
     </h5>
     <div class="row">
+      <!-- Cases -->
       <div class="col-md-12">
-        <div class="card item-card">
-          <h1
-            class="numbers
-          "
-          >
-            {{ formData.cases }}
-          </h1>
-          <p class="text-white">Confirmados</p>
-        </div>
+        <sider-item :number="formData.cases" label="Confirmados" />
       </div>
 
+      <!-- Deaths -->
       <div class="col-md-6">
-        <div class="card item-card small">
-          <h1 class="numbers">
-            {{ formData.deaths }}
-          </h1>
-          <p class="text-white">Muertes</p>
-        </div>
+        <sider-item :number="formData.deaths" label="Muertes" class="small" />
       </div>
+
+      <!-- Deaths per M -->
       <div class="col-md-6">
-        <div class="card item-card small">
-          <h1 class="numbers">
-            {{ formData.deathsPerOneMillion }}
-          </h1>
-          <p class="text-white">Muertes x 1m</p>
-        </div>
+        <sider-item :number="formData.deathsPerOneMillion" label="Muertes x 1M" class="small" />
       </div>
+
+      <!-- Recovered -->
       <div class="col-md-6">
         <sider-item
           :number="formData.recovered"
@@ -39,9 +27,13 @@
           class="small"
         />
       </div>
+
+      <!-- Active Cases -->
       <div class="col-md-6">
         <sider-item :number="formData.active" label="Activos" class="small" />
       </div>
+
+      <!-- Critical Cases -->
       <div class="col-md-6">
         <sider-item
           :number="formData.critical"
@@ -49,9 +41,12 @@
           class="small"
         />
       </div>
+      
+      <!-- Number of Tests -->
       <div class="col-md-6">
         <sider-item :number="formData.tests" label="Pruebas" class="small" />
       </div>
+
     </div>
   </div>
 </template>
@@ -79,30 +74,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-.item-card {
-  background: rgba(255, 255, 255, 0.2);
-  color: #eb4d6c;
-  height: 170px;
-  font-size: 20px;
-  margin: 5px 0;
-  display: flex;
-  padding: 15px 0;
-  justify-content: center;
-  align-items: center;
-
-  .numbers {
-    font-size: 6rem;
-    font-weight: bolder !important;
-  }
-
-  &.small {
-    height: 100px;
-    .numbers {
-      font-size: 3rem;
-      font-weight: bolder !important;
-    }
-  }
-}
-</style>

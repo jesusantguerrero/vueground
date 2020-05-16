@@ -2,19 +2,34 @@
   <div class="pt-5">
     
     <div class="row">
-      <div class="col-md-4">
+      <!-- stats -->
+      <div class="col-md-3">
         <app-sider :form-data="postService.state.context.posts"></app-sider>
       </div>
-      <div class="col-md-6">  
+
+      <!-- States info -->
+      <div class="col-md-4">
+        <side-chart :series="postService.state.context.posts" style="width: 100%; height: 500px"/>
+      </div>
+
+      <!-- Country Graph -->
+      <div class="col-md-5">  
         <rd
-          style="width:100%; height:100%"
+          class="mt-4"
           @selected="selectedProvince = $event"
         ></rd>
+        <div>
+          <h1 class="text-center"> Provincia</h1>
+          <h2 class="text-center">{{ selectedProvince }}</h2>
+        </div>
       </div>
-      <div class="col-md-2">
-         <h1 class="text-center"> Provincia</h1>
-         <h2 class="text-center">{{ selectedProvince }}</h2>
+
+      <div class="col-md-4">
+
       </div>
+
+
+      <!-- Caller -->
       <div class="col-md-12 text-center">
         <button class="btn btn-primary" @click="toggleState">
           <i
@@ -24,12 +39,14 @@
           Get Data
         </button>
       </div>
+
     </div>
   </div>
 </template>
 
 <script>
 import { createMachine, interpret, assign } from "xstate";
+import SideChart from "./side-chart.vue";
 import AppSider from "./sider.vue";
 import Rd from "./RD.vue";
 
@@ -40,6 +57,7 @@ export default {
   },
   components: {
     AppSider,
+    SideChart,
     Rd
   },
   data() {
@@ -58,7 +76,8 @@ export default {
       id: "goblog",
       initial: "idle",
       context: {
-        posts: null
+        posts: null,
+        series: null
       },
       states: {
         idle: {
@@ -67,7 +86,7 @@ export default {
         loading: {
           invoke: {
             id: "fetchPosts",
-            src: () => fetch(this.postApiEndpint).then(data => data.json()),
+            src: () => this.fetchData(),
             onDone: {
               target: "loaded",
               actions: assign({
@@ -99,6 +118,15 @@ export default {
   methods: {
     toggleState() {
       this.postService.send("FETCH");
+    },
+
+    async fetchData() {
+        const data = await fetch(this.postApiEndpint).then(data => data.json());
+        const series = await fetch(this.historicalEndpoint).then(data => data.json());
+        return {
+          ...data,
+          timeline: series.timeline
+        }
     }
   }
 };

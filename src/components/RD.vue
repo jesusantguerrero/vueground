@@ -1,13 +1,16 @@
 <template>
+<div class="scaling-svg-container">
   <svg
+    class="scaling-svg"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:amcharts="http://amcharts.com/ammap"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     version="1.1"
+    style="width: 100%; height: 100%;"
   >
-    <defs>
+     <defs>
       <amcharts:ammap
-        projection="mercator"
+        projection="AzimuthalEqualAre"
         leftLongitude="-72.004173"
         topLatitude="19.932499"
         rightLongitude="-68.322347"
@@ -212,15 +215,14 @@
       />
     </g>
   </svg>
+</div>
 </template>
 
 <script>
 export default {
   mounted() {
     document.querySelectorAll("path").forEach(pathElement => {
-      console.log(pathElement);
       pathElement.addEventListener("mouseover", e => {
-          window.el = e.target;
         this.$emit("selected", e.target.getAttribute('title'));
       });
     });
@@ -246,5 +248,9 @@ path.land:hover {
   stroke-opacity: 1;
   stroke-width: 4;
   z-index: 100;
+}
+
+.scaling-svg, .scaling-svg-container {
+  height: 100%;
 }
 </style>
