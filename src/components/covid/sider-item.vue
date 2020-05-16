@@ -1,9 +1,9 @@
 <template>
   <div class="card item-card">
-    <h1 class="numbers">
-      {{ number }}
+    <h1 class="numbers text-white">
+      {{ formattedNumber }}
     </h1>
-    <p class="text-white">{{ label }}</p>
+    <p class="">{{ label }}</p>
   </div>
 </template>
 
@@ -12,18 +12,27 @@ export default {
   props: {
     number: Number,
     label: String
+  },
+  computed: {
+    formattedNumber() {
+      try {
+        return Intl.NumberFormat().format(this.number);
+      } catch (e) {
+        return this.number;
+      }
+    }
   }
 };
 </script>
 
-
 <style lang="scss" scoped>
 .item-card {
   background: rgba(255, 255, 255, 0.2);
-  color: #eb4d6c;
-  height: 170px;
-  font-size: 20px;
+  color: #ff8ca3;
+  font-weight: bolder;
+  min-height: 100px;
   margin: 5px 0;
+  font-size: 24px;
   display: flex;
   padding: 15px 0;
   justify-content: center;
@@ -31,14 +40,14 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.5);
 
   .numbers {
-    font-size: 6rem;
+    font-size: 4rem;
     font-weight: bolder !important;
   }
 
   &.small {
     height: 100px;
     .numbers {
-      font-size: 3rem;
+      font-size: 2rem;
       font-weight: bolder !important;
     }
   }

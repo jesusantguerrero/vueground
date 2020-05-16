@@ -10,17 +10,17 @@
       </div>
 
       <!-- Deaths -->
-      <div class="col-md-6">
+      <div class="col-lg-6">
         <sider-item :number="formData.deaths" label="Muertes" class="small" />
       </div>
 
       <!-- Deaths per M -->
-      <div class="col-md-6">
+      <div class="col-lg-6">
         <sider-item :number="formData.deathsPerOneMillion" label="Muertes x 1M" class="small" />
       </div>
 
       <!-- Recovered -->
-      <div class="col-md-6">
+      <div class="col-lg-6">
         <sider-item
           :number="formData.recovered"
           label="Recuperados"
@@ -29,12 +29,12 @@
       </div>
 
       <!-- Active Cases -->
-      <div class="col-md-6">
+      <div class="col-lg-6">
         <sider-item :number="formData.active" label="Activos" class="small" />
       </div>
 
       <!-- Critical Cases -->
-      <div class="col-md-6">
+      <div class="col-lg-6">
         <sider-item
           :number="formData.critical"
           label="Criticos"
@@ -43,7 +43,7 @@
       </div>
       
       <!-- Number of Tests -->
-      <div class="col-md-6">
+      <div class="col-lg-6">
         <sider-item :number="formData.tests" label="Pruebas" class="small" />
       </div>
 
