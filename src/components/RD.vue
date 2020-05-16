@@ -6,7 +6,8 @@
     xmlns:amcharts="http://amcharts.com/ammap"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     version="1.1"
-    style="width: 100%; height: 100%;"
+    style="width: 100%; overflow: visible"
+    
   >
      <defs>
       <amcharts:ammap
@@ -20,7 +21,7 @@
       <!-- All areas are listed in the line below. You can use this list in your script. -->
       <!--{id:"DO-01"},{id:"DO-02"},{id:"DO-03"},{id:"DO-04"},{id:"DO-05"},{id:"DO-06"},{id:"DO-08"},{id:"DO-09"},{id:"DO-30"},{id:"DO-10"},{id:"DO-11"},{id:"DO-07"},{id:"DO-12"},{id:"DO-13"},{id:"DO-14"},{id:"DO-28"},{id:"DO-15 Monte"},{id:"DO-29"},{id:"DO-16"},{id:"DO-17"},{id:"DO-18"},{id:"DO-19"},{id:"DO-20"},{id:"DO-21"},{id:"DO-31"},{id:"DO-22"},{id:"DO-23"},{id:"DO-24"},{id:"DO-25"},{id:"DO-26"},{id:"DO-32"},{id:"DO-27"}-->
     </defs>
-    <g>
+    <g transform="scale(0.7)">
       <path
         id="DO-01"
         title="Distrito Nacional"
@@ -221,11 +222,26 @@
 <script>
 export default {
   mounted() {
-    document.querySelectorAll("path").forEach(pathElement => {
+    this.setBounds();
+    window.addEventListener('resize', (e) => {
+      this.setBounds();
+    })
+
+    document.querySelectorAll(".scaling-svg path").forEach(pathElement => {
       pathElement.addEventListener("mouseover", e => {
         this.$emit("selected", e.target.getAttribute('title'));
       });
     });
+  },
+
+  methods: {
+    setBounds() {
+      let bounds = document.querySelector('.scaling-svg').getBoundingClientRect()
+      const transform = bounds.width / 800;
+      document.querySelector('.scaling-svg g').setAttribute('transform', `scale(${transform})`);
+      bounds = document.querySelector('.scaling-svg g').getBoundingClientRect()
+      document.querySelector('.scaling-svg').setAttribute('height', `${bounds.height}px`);
+    }
   }
 };
 </script>
@@ -251,6 +267,6 @@ path.land:hover {
 }
 
 .scaling-svg, .scaling-svg-container {
-  height: 100%;
+  /* height: 100%; */
 }
 </style>

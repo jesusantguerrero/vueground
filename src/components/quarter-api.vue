@@ -15,7 +15,7 @@
       <!-- Country Graph -->
       <div class="col-md-5">  
         <rd
-          class="mt-4"
+          class="mt-5"
           @selected="selectedProvince = $event"
         ></rd>
         <div>
