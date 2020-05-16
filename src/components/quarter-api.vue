@@ -1,7 +1,10 @@
 <template>
   <div class="pt-5">
-    
-    <div class="row">
+    <div v-if="matches('loading')" class="d-flex justify-content-center align-item-center">
+       <i class="fa fa-spinner fa-spin bigger"></i>
+    </div>
+
+    <div class="row" v-else>
       <!-- stats -->
       <div class="col-md-3">
         <app-sider :form-data="postService.state.context.posts"></app-sider>
@@ -30,16 +33,6 @@
 
 
       <!-- Caller -->
-      <div class="col-md-12 text-center">
-        <button class="btn btn-primary" @click="toggleState">
-          <i
-            class="fa fa-spinner fa-spin"
-            v-if="postService && postService.state.matches('loading')"
-          ></i>
-          Get Data
-        </button>
-      </div>
-
     </div>
   </div>
 </template>
@@ -113,10 +106,14 @@ export default {
       })
       .start();
     this.postService = postService;
-    this.toggleState();
+    this.send('FETCH');
   },
   methods: {
-    toggleState() {
+    matches(stateName) {
+      return this.postService.state.matches(stateName);
+    },
+
+    send(actionName) {
       this.postService.send("FETCH");
     },
 
@@ -164,5 +161,9 @@ img {
   stroke: #eb4d6c;
   stroke-opacity: 1;
   stroke-width: 1;
+}
+
+.bigger {
+  font-size:50px;
 }
 </style>

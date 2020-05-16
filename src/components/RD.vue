@@ -227,7 +227,7 @@ export default {
       this.setBounds();
     })
 
-    document.querySelectorAll(".scaling-svg path").forEach(pathElement => {
+    document.querySelectorAll(".scaling-svg path, g, svg").forEach(pathElement => {
       pathElement.addEventListener("mouseover", e => {
         this.$emit("selected", e.target.getAttribute('title'));
       });
