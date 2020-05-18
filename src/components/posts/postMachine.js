@@ -1,5 +1,5 @@
 import { createMachine, sendParent } from "xstate";
-const endpoint = "https://ic-goblog.herokuapp.com/api/v1/post";
+const endpoint = "https://ic-goblog.herokuapp.com/api/v1/posts";
 
 const machine = {
   id: "post",
