@@ -9,7 +9,10 @@ You can find more about FSM aproach here:
 - here a use case with kanban [vue-kanban](https://www.npmjs.com/package/vue-kanban)
 
 ## Case one
-Control loading,loaded, context data with XState: comming soon
+Control loading,loaded, context data with XState
+
+Vueground/covid
+![covid](./src/assets/vueground.png)
 
 ## Project setup
 ```
