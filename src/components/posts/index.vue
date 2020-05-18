@@ -1,72 +1,120 @@
 <template>
   <div class="hello container">
     <h1>{{ msg }}</h1>
-
+    {{ quarter && quarter.state.value }}
     <div v-if="quarter" class="row">
-      <div
-        v-for="quarterState in Object.keys(states)"
-        :key="quarterState"
-        class="col-md-6"
-        :class="{ selected: quarter.state.value.includes(quarterState) }"
-      >
-        <div class="card w-100 mb-5">
-          <div class="card-body">
-            <h5 class="card-title">{{ quarterState }}</h5>
-            <p class="card-text"></p>
-          </div>
-        </div>
+      <div class="col-md-12">
+        <ul>
+          <li v-for="post in quarter.state.context.posts" :key="post.id">
+            <a href="#" @click.prevent="send('NEW_POST.ADD', post)">
+              {{ post.title }}
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="" v-if="quarter && quarter.state.matches('creating')">
+        <post-view
+          :post="quarter.state.context.post"
+          :machine="quarter.state.context.selectedPostRef"
+        >
+        </post-view>
       </div>
     </div>
-    <button class="btn btn-primary" @click="toggleState">Toggle State</button>
   </div>
 </template>
 
 <script>
-import { createMachine, interpret } from "xstate";
+import { createMachine, interpret, assign, spawn, send } from "xstate";
+import PostView from "./post-view";
+import postMachine from "./postMachine";
 
 export default {
   name: "HelloWorld",
+  components: {
+    PostView
+  },
   props: {
     msg: String
   },
   data() {
     return {
       quarter: null,
-      state: null,
-      states: {
-        do: {
-          on: { TOGGLE: "delegate" }
-        },
-        delegate: {
-          on: { TOGGLE: "schedule" }
-        },
-        schedule: {
-          on: { TOGGLE: "drop" }
-        },
-        drop: {
-          on: { TOGGLE: "do" }
-        }
-      }
+      state: null
     };
   },
   mounted() {
-    const fourQuarterMachine = createMachine({
-      id: "quarter",
-      initial: "do",
-      states: this.states
-    });
+    const fourQuarterMachine = createMachine(
+      {
+        id: "posts",
+        initial: "loading",
+        context: {
+          posts: null,
+          post: null,
+          selectedPostRef: null
+        },
+        states: {
+          loading: {
+            on: { CANCEL: "fail" },
+            invoke: {
+              id: "fetchPosts",
+              src: () =>
+                fetch(
+                  "https://ic-goblog.herokuapp.com/api/v1/posts"
+                ).then(data => data.json()),
+              onDone: {
+                target: "loaded",
+                actions: assign({
+                  posts: (context, event) => event.data
+                })
+              },
+              onError: "fail"
+            }
+          },
+          loaded: {
+            on: {
+              REFRESH: "loading",
+              "NEW_POST.ADD": {
+                target: "creating",
+                actions: ["feedForm", "openForm"]
+              }
+            }
+          },
+          creating: {
+            on: {
+              "NEW_POST.SAVE": "loading",
+              "NEW_POST.CLOSE": "loading"
+            }
+          },
+          fail: {
+            on: { RETRY: "loading" }
+          }
+        }
+      },
+      {
+        actions: {
+          feedForm: assign({
+            post: (context, event) => {
+              return { ...event.payload };
+            },
+            selectedPostRef: () => spawn(postMachine, "POST_FORM")
+          }),
+          openForm: send("OPEN", {
+            to: context => context.selectedPostRef
+          })
+        }
+      }
+    );
 
     const quarterService = interpret(fourQuarterMachine)
       .onTransition(state => {
         this.state = state.value;
-        console.log(quarterService);
       })
       .start();
     this.quarter = quarterService;
   },
   methods: {
-    toggleState() {
-      this.quarter.send("TOGGLE");
+    send(eventName, params) {
+      this.quarter.send({ type: eventName, payload: params });
     }
   }
 };
