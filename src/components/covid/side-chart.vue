@@ -1,5 +1,5 @@
 <template>
-  <div class="h-100">
+  <div class="">
     <h5 class="text-center">
       <span class="text-gray"> Charts</span>
     </h5>

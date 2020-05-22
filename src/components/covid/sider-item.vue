@@ -28,7 +28,7 @@ export default {
 <style lang="scss" scoped>
 .item-card {
   background: rgba(255, 255, 255, 0.2);
-  color: #ff8ca3;
+  color: #FF8392;
   font-weight: bolder;
   min-height: 100px;
   margin: 5px 0;
