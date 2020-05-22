@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-5 covid-dashboard p-5">
+  <div class="pt-5 covid-dashboard p-md-5">
     <div
       v-if="matches('loading')"
       class="d-flex justify-content-center align-item-center"
@@ -68,7 +68,6 @@
 import { createMachine, interpret, assign } from "xstate";
 import SideChart from "./side-chart.vue";
 import AppSider from "./sider.vue";
-import SiderItem from "./sider-item";
 import Rd from "./rd-map.vue";
 
 export default {
@@ -79,7 +78,6 @@ export default {
   components: {
     AppSider,
     SideChart,
-    SiderItem,
     Rd
   },
   data() {
