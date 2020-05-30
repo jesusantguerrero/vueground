@@ -1,10 +1,10 @@
 <template>
-  <div class="about">
-    <posts-main></posts-main>
+  <div class="container-fluid">
+    <div class="about">
+      <posts-main></posts-main>
+    </div>
   </div>
 </template>
-
-
 <script>
 import PostsMain from "@/components/posts/";
 
@@ -13,5 +13,5 @@ export default {
   components: {
     PostsMain
   }
-}
+};
 </script>

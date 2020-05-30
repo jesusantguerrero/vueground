@@ -18,6 +18,12 @@ export default new Router({
       name: "posts",
       component: () =>
         import(/* webpackChunkName: "posts" */ "./views/Posts.vue")
+    },
+    {
+      path: "/quadrant",
+      name: "quadrant",
+      component: () =>
+        import(/** WebpackChunckName "quadrant"*/ "./views/Quadrant.vue")
     }
   ]
 });
