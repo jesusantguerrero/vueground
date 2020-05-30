@@ -22,13 +22,22 @@
           <el-menu-item index="2-4-3">item three</el-menu-item>
         </el-submenu>
       </el-submenu>
-      <el-menu-item index="3" disabled v-if="user">Info</el-menu-item>
-      <el-menu-item index="4" v-if="user"
-        ><a href="https://www.ele.me" target="_blank">Orders</a></el-menu-item
-      >
+      <!-- <el-menu-item> -->
+      <div class="profile-caller" v-if="user">
+        <span class="mr-2">
+          {{ user.name || user.displayName }}
+        </span>
+        <el-avatar :size="40" :src="user.picture || user.photoUrl"></el-avatar>
+        <button
+          class="btn btn-danger ml-2"
+          @click="$parent.send('LOGOUT')"
+          v-if="user"
+        >
+          <i class="fa fa-power-off"></i>
+        </button>
+      </div>
+      <!-- </el-menu-item> -->
     </el-menu>
-
-    <button @click="$parent.send('LOGOUT')" v-if="user">Logout</button>
   </div>
 </template>
 
@@ -51,4 +60,18 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss">
+.profile-caller {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  padding: 15px 50px;
+  align-self: center;
+  right: 0px;
+  color: rgb(255, 255, 255);
+  border-bottom-color: transparent;
+  background-color: rgb(84, 92, 100);
+  margin-left: auto !important;
+}
+</style>

@@ -13,7 +13,6 @@
       </div>
       <div class="text-primary container-fluid">
         <div id="auth-container" v-if="matches('unauthenticated')"></div>
-        {{ state.value }} {{ state.context }}
       </div>
     </div>
   </div>
@@ -59,7 +58,7 @@ export default {
   watch: {
     "state.value": {
       handler(state) {
-        if (state == 'unauthenticated') {
+        if (state == "unauthenticated") {
           this.initFirebaseAuth();
         }
       },
