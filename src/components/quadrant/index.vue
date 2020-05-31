@@ -4,6 +4,7 @@
       :user="state.context && state.context.user"
       :app-machine="quadrantApp"
     ></layout>
+
     <div class="container-fluid text-primary">
       <div
         v-if="matches('loading')"
@@ -15,6 +16,17 @@
         <div id="auth-container" v-if="matches('unauthenticated')"></div>
       </div>
     </div>
+
+    <div v-if="matches('authenticated')" class="text-primary container-fluid">
+      <div class="d-flex justify-content-center">
+        <quadrant-form @save="addQuadrantItem" :user="state.context.user"> </quadrant-form>
+      </div>
+      <div class="d-flex justify-content-between">
+        <h2>Quadrant Technique</h2>
+        <button class="btn btn-primary"> Complete Day</button>
+      </div>
+      <kanban-data :data="list" @changed="updateStatus"></kanban-data>
+    </div>
   </div>
 </template>
 
@@ -22,8 +34,11 @@
 import { interpret } from "xstate";
 import appMachine from "./appMachine";
 import Layout from "@/components/quadrant/layout";
+import KanbanData from "./kanban";
+import QuadrantForm from "./QuadrantForm";
 
 import * as firebase from "firebase";
+import "firebase/database";
 import * as firebaseui from "firebaseui";
 
 const firebaseConfig = {
@@ -38,6 +53,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 const ui = new firebaseui.auth.AuthUI(firebase.auth());
 const uiConfig = {
   signInOptions: [
@@ -47,12 +63,17 @@ const uiConfig = {
 };
 export default {
   components: {
-    Layout
+    Layout,
+    KanbanData,
+    QuadrantForm
   },
   data() {
     return {
       quadrantApp: null,
-      state: {}
+      state: {},
+      isLoading: false,
+      list: [],
+      formData: {}
     };
   },
   watch: {
@@ -60,6 +81,10 @@ export default {
       handler(state) {
         if (state == "unauthenticated") {
           this.initFirebaseAuth();
+        }
+
+        if (state == "authenticated") {
+          this.getList();
         }
       },
       immediate: true
@@ -110,6 +135,32 @@ export default {
           });
         } catch (e) {}
       }, 1000);
+    },
+
+    addQuadrantItem(item) {
+      this.isLoading = true;
+      db.ref(`quadrantTasks/${this.state.context.user.id}`)
+        .child(item.id)
+        .set(item)
+        .then(() => {
+          this.isLoading = false;
+        })
+        .catch(() => {});
+    },
+
+    updateStatus(item) {
+      db.ref(`quadrantTasks/${this.state.context.user.id}/${item.id}`).update(item);
+    },
+
+    getList() {
+      const quadrantTasksRef = db.ref(`quadrantTasks/${this.state.context.user.id}`);
+      quadrantTasksRef.on("child_added", data => {
+        this.list.push(data.val());
+      });
+    },
+
+    clearForm() {
+      this.formData = {};
     }
   }
 };

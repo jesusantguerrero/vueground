@@ -54,18 +54,19 @@ const appMachine = createMachine(
       setUser: assign({
         user: (context, event) => {
           const user = event.payload ? event.payload : null;
+          localStorage.setItem("firebaseui::currentUser", JSON.stringify(user));
           return user;
         }
       }),
       getToken: assign({
         user: () => {
-          const user = localStorage.getItem("firebaseui::rememberedAccounts");
-          return user ? JSON.parse(user)[0] : null;
+          const user = localStorage.getItem("firebaseui::currentUser");
+          return user ? JSON.parse(user) : null;
         }
       }),
       logout: assign({
         user: () => {
-          localStorage.removeItem("firebaseui::rememberedAccounts");
+          localStorage.removeItem("firebaseui::currentUser");
           return null;
         }
       })

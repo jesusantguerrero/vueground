@@ -16,7 +16,9 @@
     "firebase": "^7.14.6",
     "firebaseui": "^4.5.0",
     "vue": "^2.6.10",
+    "vue-kanban": "^1.6.2",
     "vue-router": "^3.0.3",
+    "vuedraggable": "^2.23.2",
     "xstate": "^4.9.1"
   },
   "devDependencies": {
