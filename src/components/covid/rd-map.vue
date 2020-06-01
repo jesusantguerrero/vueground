@@ -241,7 +241,7 @@ export default {
         .querySelector(".scaling-svg")
         .getBoundingClientRect();
       let transform = bounds.width / 1000;
-      transform = transform > 0.4 ? transform : 0.420;
+      transform = transform > 0.4 ? transform : 0.42;
       document
         .querySelector(".scaling-svg g")
         .setAttribute("transform", `scale(${transform})`);
