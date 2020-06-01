@@ -19,13 +19,17 @@
 
     <div v-if="matches('authenticated')" class="text-primary container-fluid">
       <div class="d-flex justify-content-center">
-        <quadrant-form @save="addQuadrantItem" :user="state.context.user"> </quadrant-form>
+        <quadrant-form @save="addQuadrantItem" :user="state.context.user">
+        </quadrant-form>
       </div>
       <div class="d-flex justify-content-between">
         <h2>Quadrant Technique</h2>
-        <button class="btn btn-primary"> Complete Day</button>
+        <button class="btn btn-primary" @click="completeDay">
+          Complete Day
+          <i class="fa fa-spinner fa-spin bigger" v-if="isLoading"></i>
+        </button>
       </div>
-      <kanban-data :data="list" @changed="updateStatus"></kanban-data>
+      <kanban-data :data="list" :committed="yerterday" @changed="updateStatus"></kanban-data>
     </div>
   </div>
 </template>
@@ -37,7 +41,8 @@ import Layout from "@/components/quadrant/layout";
 import KanbanData from "./kanban";
 import QuadrantForm from "./QuadrantForm";
 
-import * as firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
 import "firebase/database";
 import * as firebaseui from "firebaseui";
 
@@ -72,7 +77,9 @@ export default {
       quadrantApp: null,
       state: {},
       isLoading: false,
+      userQuadrant: null,
       list: [],
+      yerterday: [],
       formData: {}
     };
   },
@@ -80,6 +87,8 @@ export default {
     "state.value": {
       handler(state) {
         if (state == "unauthenticated") {
+          this.list = [];
+          this.yerterday = [];
           this.initFirebaseAuth();
         }
 
@@ -125,6 +134,7 @@ export default {
             callbacks: {
               signInSuccessWithAuthResult: result => {
                 const user = result.additionalUserInfo.profile;
+                user.uid = result.user.uid;
                 this.send("SET_USER", user);
                 this.send("LOGIN");
                 return false;
@@ -139,23 +149,57 @@ export default {
 
     addQuadrantItem(item) {
       this.isLoading = true;
-      db.ref(`quadrantTasks/${this.state.context.user.id}`)
+      this.userQuadrant = db
+        .ref(`quadrantTasks`)
+        .child(this.state.context.user.uid);
+      this.userQuadrant
         .child(item.id)
         .set(item)
         .then(() => {
           this.isLoading = false;
         })
-        .catch(() => {});
+        .catch(e => {
+          console.log(e);
+        });
     },
 
     updateStatus(item) {
-      db.ref(`quadrantTasks/${this.state.context.user.id}/${item.id}`).update(item);
+      return db
+        .ref(`quadrantTasks/${this.state.context.user.uid}/${item.id}`)
+        .update(item);
+    },
+
+    completeDay() {
+      this.isLoading = true;
+      let completed = this.list.filter(item => item.done);
+      completed = completed.map(item => {
+        item.commit = true;
+        item.commitDate = new Date().toISOString().slice(0, 10);
+        return item;
+      });
+
+      completed.forEach(async item => {
+        await this.updateStatus(item);
+      });
+      this.isLoading = false;
     },
 
     getList() {
-      const quadrantTasksRef = db.ref(`quadrantTasks/${this.state.context.user.id}`);
-      quadrantTasksRef.on("child_added", data => {
+      const quadrantTasksRef = db.ref(
+        `quadrantTasks/${this.state.context.user.uid}`
+      );
+
+      const daily = quadrantTasksRef.orderByChild("commit").equalTo(false);
+
+      daily.on("child_added", data => {
         this.list.push(data.val());
+      });
+
+      const completedYesterday = quadrantTasksRef
+        .orderByChild("commit")
+        .equalTo(true);
+      completedYesterday.on("child_added", data => {
+        this.yerterday.push(data.val());
       });
     },
 

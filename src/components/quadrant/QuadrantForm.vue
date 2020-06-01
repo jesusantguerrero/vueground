@@ -50,9 +50,11 @@ export default {
 
       return {
         projectId: 1,
+        commit: false,
+        commitDate: "",
         userId: this.user.id,
         title: this.formData.title,
-        text: this.formData.description,
+        text: this.formData.description || "",
         completedAt: "",
         createdAt: new Date().toISOString().slice(0, 10),
         deletedAt: null,

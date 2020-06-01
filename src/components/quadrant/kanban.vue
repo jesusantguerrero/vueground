@@ -2,6 +2,37 @@
   <div>
     <!-- <kanban-board :stages="stages" :blocks="data"> </kanban-board> -->
     <div class="row d-flex mt-5">
+      <div class="col state-card card" :class="`color-yerterday`">
+        <h4 class="title">
+          committed
+        </h4>
+        <div class="items-container">
+          <div v-for="item in committed" :key="item.id" class="item">
+            <header>
+              <div class="form-group">
+                <label :for="item.id">
+                  {{ item.title }} ({{ item.commitDate }})
+                </label>
+              </div>
+            </header>
+            <section></section>
+            <section class="controls d-flex">
+              <div class="flag"><span class="material-icons">flag</span></div>
+              <div class="project">
+                <span class="material-icons">flag</span>
+              </div>
+              <div class="status"><span class="material-icons">flag</span></div>
+              <div class="archive">
+                <span class="material-icons">flag</span>
+              </div>
+              <div class="more">
+                <span class="material-icons">more-vert</span>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
       <div
         class="col state-card card"
         :class="`color-${stage}`"
@@ -72,6 +103,12 @@ export default {
       default() {
         return [];
       }
+    },
+    committed: {
+      type: Array,
+      default() {
+        return [];
+      }
     }
   },
   data() {
@@ -84,7 +121,7 @@ export default {
         delegate: [],
         delete: []
       },
-      stages: ["backlog", "do", "schedule", "delegate", "delete"]
+      stages: ["do", "schedule", "delegate", "delete", "backlog"]
     };
   },
 
@@ -172,11 +209,11 @@ export default {
       display: none !important;
     }
 
-    &:hover {
-      .controls {
-        display: flex !important;
-      }
-    }
+    // &:hover {
+    // .controls {
+    //     display: flex !important;
+    // }
+    // }
   }
 }
 </style>
