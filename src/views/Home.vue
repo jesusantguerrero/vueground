@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid"  style="margin-top:50px">
+  <div class="container-fluid" style="margin-top:50px">
     <div class="home">
       <h3 class="text-center">Estado de Republica Dominicana</h3>
       <covid-main></covid-main>

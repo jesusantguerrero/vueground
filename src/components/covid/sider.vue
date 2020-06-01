@@ -16,7 +16,11 @@
 
       <!-- Deaths per M -->
       <div class="col-lg-6">
-        <sider-item :number="formData.deathsPerOneMillion" label="Muertes x 1M" class="small" />
+        <sider-item
+          :number="formData.deathsPerOneMillion"
+          label="Muertes x 1M"
+          class="small"
+        />
       </div>
 
       <!-- Recovered -->
@@ -41,12 +45,11 @@
           class="small"
         />
       </div>
-      
+
       <!-- Number of Tests -->
       <div class="col-lg-6">
         <sider-item :number="formData.tests" label="Pruebas" class="small" />
       </div>
-
     </div>
   </div>
 </template>
@@ -68,7 +71,7 @@ export default {
   },
   computed: {
     updated() {
-      const time  = this.formData ? this.formData.updated : '';
+      const time = this.formData ? this.formData.updated : "";
       return new Date().toISOString().slice(0, 10);
     }
   }

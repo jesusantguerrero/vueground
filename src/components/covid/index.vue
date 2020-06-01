@@ -21,7 +21,6 @@
         />
       </div>
 
-
       <!-- Country Graph -->
       <div class="col-md-8 pb-5 mb-5 pt-5 mt-5">
         <h4 class="text-center">

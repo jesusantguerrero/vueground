@@ -29,7 +29,11 @@
           <i class="fa fa-spinner fa-spin bigger" v-if="isLoading"></i>
         </button>
       </div>
-      <kanban-data :data="list" :committed="yerterday" @changed="updateStatus"></kanban-data>
+      <kanban-data
+        :data="list"
+        :committed="yerterday"
+        @changed="updateStatus"
+      ></kanban-data>
     </div>
   </div>
 </template>
