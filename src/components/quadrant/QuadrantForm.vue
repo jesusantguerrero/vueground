@@ -1,10 +1,15 @@
 <template>
-  <form action="" class="note-form card" @keydown.ctrl.s.prevent="emitSave">
+  <form
+    action=""
+    class="note-form card"
+    @keydown.ctrl.s.prevent="emitSave"
+    ref="QuadrantForm"
+  >
     <input
       type="text"
       class="form-control"
       v-model="formData.title"
-      @focus="focused = true"
+      @focus="listenClickOut"
       placeholder="Keep it short"
     />
     <textarea
@@ -13,6 +18,7 @@
       id=""
       cols="30"
       class="form-control"
+      :class="{ show: focused }"
       placeholder="Add a description"
       rows="5"
       v-model="formData.description"
@@ -42,6 +48,7 @@ export default {
       defaultState: "backlog"
     };
   },
+  mounted() {},
   methods: {
     prepareItem() {
       const id = Math.random()
@@ -72,6 +79,33 @@ export default {
         this.$emit("save", this.prepareItem());
         this.formData = {};
       }
+    },
+
+    listenClickOut() {
+      if (!this.focused) {
+        this.focused = true;
+        const self = this;
+        document.addEventListener(
+          "click",
+          e => {
+            if (
+              !self.$refs.QuadrantForm ||
+              (e.target !== self.$refs.QuadrantForm &&
+                !self.$refs.QuadrantForm.contains(e.target) &&
+                self.focused)
+            ) {
+              this.focused = false;
+              document.removeEventListener("click", () => {});
+              this.disableClickOut();
+            }
+          },
+          true
+        );
+      }
+    },
+
+    disableClickOut() {
+      document.removeEventListener("click", () => {});
     }
   }
 };
@@ -92,6 +126,19 @@ export default {
     &:focus {
       outline: none;
       box-shadow: none;
+    }
+  }
+
+  .show {
+    animation: ease-in appear 0.3s;
+  }
+
+  @keyframes appear {
+    0% {
+      height: 0;
+    }
+    100% {
+      height: 116px;
     }
   }
 }
