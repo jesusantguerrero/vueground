@@ -65,7 +65,9 @@
                     :id="item.id"
                     v-model="item.done"
                   />
-                  {{ item.title }}
+                  <span>
+                    {{ item.title }}
+                  </span>
                 </label>
               </div>
             </header>
@@ -169,6 +171,7 @@ export default {
 .state-card {
   min-width: 270px;
   margin: 0 15px;
+  min-height: 300px;
 
   &.color-delete {
     background: #f28b82;
@@ -202,7 +205,6 @@ export default {
     cursor: move;
     margin: 5px 0;
     color: #666;
-    font-weight: bold;
     transition: all ease 0.3s;
 
     .controls {
@@ -214,6 +216,52 @@ export default {
     //     display: flex !important;
     // }
     // }
+
+    input[type="checkbox"] {
+      -webkit-appearance: none;
+      width: 1.2rem;
+      height: 1.2rem;
+      background: transparent;
+      display: block;
+      margin: 0 2px;
+      border-radius: 3px;
+      border: 2px solid #666;
+      position: relative;
+      cursor: pointer;
+      transition: all ease 0.3s;
+      display: inline-block;
+      &:focus {
+        outline: 0;
+      }
+    }
+
+    [for^="check"] {
+      display: inline-block;
+      width: 80%;
+      font-size: 18px;
+      z-index: 200;
+      cursor: text;
+      color: #777;
+      font-size: 20px;
+    }
+
+    [type="checkbox"]:checked {
+      background: #655;
+
+      &:before {
+        content: "\2718";
+        color: #fff;
+        left: 5%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+      }
+
+      &+[for*=""] {
+        text-decoration: line-through;
+      }
+    }
   }
 }
 </style>
