@@ -12,6 +12,7 @@
     "@amcharts/amcharts4": "^4.9.22",
     "@amcharts/amcharts4-geodata": "^4.1.15",
     "core-js": "^2.6.5",
+    "date-fns": "^2.14.0",
     "element-ui": "^2.4.5",
     "firebase": "^7.14.6",
     "firebaseui": "^4.5.0",

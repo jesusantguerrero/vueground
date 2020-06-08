@@ -24,15 +24,13 @@
       </div>
       <div class="d-flex justify-content-between">
         <h2>Quadrant Technique</h2>
-        <button class="btn btn-primary" @click="completeDay">
-          Complete Day
-          <i class="fa fa-spinner fa-spin bigger" v-if="isLoading"></i>
-        </button>
       </div>
       <kanban-data
+        ref="Kanban"
         :data="list"
         :committed="yerterday"
         @changed="updateStatus"
+        @complete-day="completeDay"
       ></kanban-data>
     </div>
   </div>
@@ -40,6 +38,7 @@
 
 <script>
 import { interpret } from "xstate";
+import { subDays } from "date-fns";
 import appMachine from "./appMachine";
 import Layout from "@/components/quadrant/layout";
 import KanbanData from "./kanban";
@@ -98,6 +97,7 @@ export default {
 
         if (state == "authenticated") {
           this.getList();
+          this.preStartDay();
         }
       },
       immediate: true
@@ -175,20 +175,35 @@ export default {
 
     completeDay() {
       this.isLoading = true;
+      const yesterday = subDays(new Date(), 1)
+        .toISOString()
+        .slice(0, 10);
+      const now = new Date().toISOString().slice(0, 10);
       let completed = this.list.filter(item => item.done);
       completed = completed.map(item => {
         item.commit = true;
-        item.commitDate = new Date().toISOString().slice(0, 10);
+        item.commitDate = yesterday;
         return item;
       });
 
       completed.forEach(async item => {
         await this.updateStatus(item);
       });
+
+      const quadrantDailyRef = db.ref(
+        `quadrantDaily/${this.state.context.user.uid}`
+      );
+
+      quadrantDailyRef.child(now).set({
+        date: now
+      });
       this.isLoading = false;
     },
 
     getList() {
+      const yesterday = subDays(new Date(), 1)
+        .toISOString()
+        .slice(0, 10);
       const quadrantTasksRef = db.ref(
         `quadrantTasks/${this.state.context.user.uid}`
       );
@@ -199,9 +214,15 @@ export default {
         this.list.push(data.val());
       });
 
+      daily.on("child_changed", data => {
+        const itemChanged = data.val();
+        const index = this.list.findIndex(item => item.id == itemChanged.id);
+        this.$set(this.list, index, itemChanged);
+      });
+
       const completedYesterday = quadrantTasksRef
-        .orderByChild("commit")
-        .equalTo(true);
+        .orderByChild("commitDate")
+        .equalTo(yesterday);
       completedYesterday.on("child_added", data => {
         this.yerterday.push(data.val());
       });
@@ -209,6 +230,27 @@ export default {
 
     clearForm() {
       this.formData = {};
+    },
+
+    openStartDay() {
+      alert("Start a new date");
+    },
+
+    preStartDay() {
+      const quadrantDailyRef = db.ref(
+        `quadrantDaily/${this.state.context.user.uid}`
+      );
+
+      const today = quadrantDailyRef
+        .orderByChild("date")
+        .equalTo(new Date().toISOString().slice(0, 10));
+
+      today.on("value", todayDaily => {
+        console.log(todayDaily.val(), "hola");
+        if (!todayDaily.val()) {
+          this.$refs.Kanban.openDialog();
+        }
+      });
     }
   }
 };
