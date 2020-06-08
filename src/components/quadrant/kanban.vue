@@ -7,27 +7,8 @@
           committed
         </h4>
         <div class="items-container">
-          <div v-for="item in committed" :key="item.id" class="item">
-            <header>
-              <div class="form-group">
-                <label for=""> {{ item.title }} ({{ item.commitDate }}) </label>
-              </div>
-            </header>
-            <section></section>
-            <section class="controls d-flex">
-              <div class="flag"><span class="material-icons">flag</span></div>
-              <div class="project">
-                <span class="material-icons">flag</span>
-              </div>
-              <div class="status"><span class="material-icons">flag</span></div>
-              <div class="archive">
-                <span class="material-icons">flag</span>
-              </div>
-              <div class="more">
-                <span class="material-icons">more-vert</span>
-              </div>
-            </section>
-          </div>
+          <quadrant-task :item="item" v-for="item in committed" :key="item.id" :allow-check="false">
+          </quadrant-task>
         </div>
       </div>
 
@@ -51,29 +32,12 @@
           class="items-container"
           @change="onChange($event, stage)"
         >
-          <div v-for="item in quadrants[stage]" :key="item.id" class="item">
-            <header>
-              <div class="form-group">
-                <label class="checkbox-label">
-                  <input
-                    v-if="stage != 'backlog'"
-                    type="checkbox"
-                    @change="updateDone(item)"
-                    name=""
-                    :id="item.id"
-                    v-model="item.done"
-                  />
-                  <span>
-                    {{ item.title }}
-                  </span>
-                </label>
-                <span class="actions">
-                  <i class="fa fa-pencil action-icon" @click.prevent=""></i>
-                  <i class="fa fa-trash action-icon" @click.prevent=""></i>
-                </span>
-              </div>
-            </header>
-          </div>
+          <quadrant-task
+            v-for="item in quadrants[stage]"
+            :item="item"
+            :key="item.id"
+          >
+          </quadrant-task>
         </draggable>
       </div>
     </div>
@@ -92,28 +56,12 @@
             To Do <span class="small">({{ quadrants.do.length }})</span>
           </h4>
           <div class="items-container">
-            <div v-for="item in quadrants.do" :key="item.id" class="item">
-              <header>
-                <div class="form-group">
-                  <label class="checkbox-label">
-                    <input
-                      type="checkbox"
-                      @change="updateDone(item)"
-                      name=""
-                      :id="item.id"
-                      v-model="item.done"
-                    />
-                    <span>
-                      {{ item.title }}
-                    </span>
-                  </label>
-                  <span class="actions">
-                    <i class="fa fa-pencil action-icon" @click.prevent=""></i>
-                    <i class="fa fa-trash action-icon" @click.prevent=""></i>
-                  </span>
-                </div>
-              </header>
-            </div>
+            <quadrant-task
+              :item="item"
+              v-for="item in quadrants.do"
+              :key="item.id"
+            >
+            </quadrant-task>
           </div>
         </div>
       </div>
@@ -126,10 +74,12 @@
 
 <script>
 import draggable from "vuedraggable";
+import QuadrantTask from "./quadrant-task";
 
 export default {
   components: {
-    draggable
+    draggable,
+    QuadrantTask
   },
   props: {
     data: {
@@ -185,12 +135,6 @@ export default {
       return this.data
         .filter(block => block.state == state && block.commit == false)
         .slice();
-    },
-    updateDone(item) {
-      item.completedAt = item.done
-        ? new Date().toISOString().slice(0, 10)
-        : null;
-      this.$emit("changed", item);
     },
     onChange({ added }, stage) {
       if (added) {
@@ -253,7 +197,8 @@ export default {
       display: none !important;
     }
 
-    .actions {
+    .actions,
+    .description {
       display: none;
     }
 
@@ -277,6 +222,13 @@ export default {
           background: rgba(0, 0, 0, 0.1);
           cursor: pointer !important;
         }
+      }
+
+      .description {
+        display: block;
+        border-left: 3px solid #909090;
+        padding-left: 10px;
+        color: #707070;
       }
     }
 
