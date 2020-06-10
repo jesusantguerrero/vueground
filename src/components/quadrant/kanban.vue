@@ -7,7 +7,12 @@
           committed
         </h4>
         <div class="items-container">
-          <quadrant-task :item="item" v-for="item in committed" :key="item.id" :allow-check="false">
+          <quadrant-task
+            :item="item"
+            v-for="item in committed"
+            :key="item.id"
+            :allow-check="false"
+          >
           </quadrant-task>
         </div>
       </div>
@@ -36,6 +41,8 @@
             v-for="item in quadrants[stage]"
             :item="item"
             :key="item.id"
+            @deleted="$emit('deleted', $event)"
+            @changed="$emit('changed', $event)"
           >
           </quadrant-task>
         </draggable>
@@ -185,107 +192,6 @@ export default {
   .items-container {
     height: 100%;
     width: 100%;
-  }
-
-  .item {
-    cursor: move;
-    margin: 5px 0;
-    color: #666;
-    transition: all ease 0.3s;
-
-    .controls {
-      display: none !important;
-    }
-
-    .actions,
-    .description {
-      display: none;
-    }
-
-    &:hover {
-      .actions {
-        display: inline-flex;
-        width: 100%;
-        justify-content: flex-end;
-        padding-right: 10px;
-      }
-      .action-icon {
-        margin-left: 5px;
-        height: 25px;
-        width: 25px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50%;
-
-        &:hover {
-          background: rgba(0, 0, 0, 0.1);
-          cursor: pointer !important;
-        }
-      }
-
-      .description {
-        display: block;
-        border-left: 3px solid #909090;
-        padding-left: 10px;
-        color: #707070;
-      }
-    }
-
-    .checkbox-label {
-      display: flex;
-      align-items: flex-start;
-    }
-
-    input[type="checkbox"] {
-      -webkit-appearance: none;
-      width: 1.2rem;
-      min-width: 1.2rem;
-      height: 1.2rem;
-      min-height: 1.2rem;
-      background: transparent;
-      display: block;
-      margin: 0 2px;
-      border-radius: 3px;
-      border: 2px solid #666;
-      position: relative;
-      margin-right: 10px;
-      margin-top: 2px;
-      cursor: pointer;
-      transition: all ease 0.3s;
-      display: inline-block;
-      &:focus {
-        outline: 0;
-      }
-    }
-
-    [for^="check"] {
-      display: inline-block;
-      width: 80%;
-      font-size: 18px;
-      z-index: 200;
-      cursor: text;
-      color: #777;
-      font-size: 20px;
-    }
-
-    [type="checkbox"]:checked {
-      background: #655;
-
-      &:before {
-        content: "\2718";
-        color: #fff;
-        left: 5%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px;
-      }
-
-      & + [for*=""] {
-        text-decoration: line-through;
-      }
-    }
   }
 }
 </style>
