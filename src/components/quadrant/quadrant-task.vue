@@ -1,6 +1,6 @@
 <template>
   <div class="item">
-    <header>
+    <header class="item-header">
       <div class="form-group">
         <label class="checkbox-label">
           <input
@@ -16,11 +16,14 @@
           </span>
         </label>
         <div class="description" v-html="item.text"></div>
-        <span class="actions">
-          <i class="fa fa-pencil action-icon" @click.prevent=""></i>
-          <i class="fa fa-trash action-icon" @click.prevent=""></i>
-        </span>
       </div>
+      <span class="actions">
+        <i class="fa fa-pencil action-icon" @click.prevent=""></i>
+        <i
+          class="fa fa-trash action-icon"
+          @click.prevent="deleteItem(item)"
+        ></i>
+      </span>
     </header>
   </div>
 </template>
@@ -64,39 +67,49 @@ export default {
     display: none !important;
   }
 
-  .actions,
+  .item-header {
+    display: flex;
+  }
+
+  .form-group {
+    width: 100%;
+  }
+
   .description {
-    display: none;
+    display: block;
+    border-left: 3px solid #909090;
+    padding-left: 10px;
+    color: #707070;
+  }
+
+  .actions {
+    opacity: 0;
+    display: inline-flex;
+    width: 70px;
+    justify-content: flex-end;
+    padding-right: 10px;
+    transition: all ease 0.3s;
+  }
+
+  .action-icon {
+    margin-left: 5px;
+    height: 25px;
+    min-width: 25px;
+    width: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+      cursor: pointer !important;
+    }
   }
 
   &:hover {
     .actions {
-      display: inline-flex;
-      width: 100%;
-      justify-content: flex-end;
-      padding-right: 10px;
-    }
-
-    .action-icon {
-      margin-left: 5px;
-      height: 25px;
-      width: 25px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 50%;
-
-      &:hover {
-        background: rgba(0, 0, 0, 0.1);
-        cursor: pointer !important;
-      }
-    }
-
-    .description {
-      display: block;
-      border-left: 3px solid #909090;
-      padding-left: 10px;
-      color: #707070;
+      opacity: 1;
     }
   }
 
@@ -145,9 +158,10 @@ export default {
       color: #fff;
       left: 5%;
       display: flex;
+      bottom: 5px;
       justify-content: center;
       align-items: center;
-      font-size: 14px;
+      font-size: 10px;
     }
 
     & + [for*=""] {

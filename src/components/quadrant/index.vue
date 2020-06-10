@@ -23,13 +23,13 @@
         </quadrant-form>
       </div>
       <div class="d-flex justify-content-between">
-        <h2>Quadrant Technique</h2>
       </div>
       <kanban-data
         ref="Kanban"
         :data="list"
         :committed="yerterday"
         @changed="updateStatus"
+        @deleted="deleteItem"
         @complete-day="completeDay"
       ></kanban-data>
     </div>
@@ -42,7 +42,7 @@ import { subDays } from "date-fns";
 import appMachine from "./appMachine";
 import Layout from "@/components/quadrant/layout";
 import KanbanData from "./kanban";
-import QuadrantForm from "./QuadrantForm";
+import QuadrantForm from "./quadrant-form";
 
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -173,6 +173,12 @@ export default {
         .update(item);
     },
 
+    deleteItem(item) {
+      return db
+        .ref(`quadrantTasks/${this.state.context.user.uid}/${item.id}`)
+        .remove()
+    },
+
     completeDay() {
       this.isLoading = true;
       const yesterday = subDays(new Date(), 1)
@@ -213,6 +219,11 @@ export default {
       daily.on("child_added", data => {
         this.list.push(data.val());
       });
+
+      daily.on("child_removed", data => {
+        const index = this.list.findIndex(item => item.id == data.key);
+        this.list.splice(index, 1);
+      })
 
       daily.on("child_changed", data => {
         const itemChanged = data.val();
